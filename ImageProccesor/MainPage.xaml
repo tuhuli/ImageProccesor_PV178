@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:model="clr-namespace:ImageProccesor"
+             xmlns:viewmodel="clr-namespace:ImageProccesor.ViewModel"
+             x:DataType="viewmodel:ImageViewModel"
+             x:Class="ImageProccesor.MainPage">
+
+
+    <ScrollView>
+        <VerticalStackLayout
+            Spacing="25"
+            Padding="30,0"
+            VerticalOptions="Center">
+
+
+            <CollectionView ItemsSource="{Binding Images}"
+                            BackgroundColor="LightBlue">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Horizontal" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.Shadow>
+                    <Shadow Brush="Black"
+                            Offset="20,20"
+                            Radius="5"
+                            Opacity="0.08"/>
+                </CollectionView.Shadow>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:ImageModel">
+                        <Grid Padding="3"
+                              ColumnSpacing="350">
+                            <Frame HeightRequest="255"
+                                   WidthRequest="210">
+                                <Grid Padding="0"
+                                      RowDefinitions="*,*">
+                                    
+                                    <ImageButton 
+                                        Source="{Binding ImageSource}" 
+                                        HeightRequest="200" 
+                                        WidthRequest="200"
+                                        Aspect="AspectFit"
+                                        
+                                        
+                                        Grid.Row="0"/>
+                                    
+                                    <Label Text="{Binding ImageNumber}. {Binding Name}"
+                                           SemanticProperties.HeadingLevel="Level2"
+                                           FontSize="Medium"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="End"
+                                           Grid.Row="2"/>
+                                        
+                                </Grid>
+                            </Frame>
+
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Grid ColumnDefinitions="*,*"
+                  ColumnSpacing="5"
+                  RowDefinitions="*,*,Auto"
+                  RowSpacing="10"
+                  >
+                
+                <Label
+                    Text="ImageProccesor by Pier!"
+                    SemanticProperties.HeadingLevel="Level1"
+                    FontSize="32"
+                    HorizontalOptions="Center" 
+                    Grid.Row="0"
+                    Grid.ColumnSpan="2"/>
+
+
+
+                <Label
+                    Text="Welcome to .NET Multi-platform App UI Imageprocessor"
+                    SemanticProperties.HeadingLevel="Level2"
+                    SemanticProperties.Description="Welcome to dot net Multi platform App U I Imageprocessor"
+                    FontSize="18"
+                    HorizontalOptions="Center" 
+                    Grid.Row="1"
+                    Grid.ColumnSpan="2"/>
+
+                <Button
+                    x:Name="AddImage"
+                    Text="Add Images"
+                    SemanticProperties.Hint="Adding pictures to show"
+                    Clicked="FilePickerClickedAsync"
+                    HorizontalOptions="Center"
+                    Grid.Row="3"
+                    Grid.ColumnSpan="1"
+                    Grid.Column="1"
+                    Margin="8"/>
+                    
+            
+                <Button
+                    x:Name="GetImages"
+                    Text="Refresh Images"
+                    SemanticProperties.Hint="Refreshing images to show"
+                    Command="{Binding GetImagesCommand}"
+                    IsEnabled="{Binding IsNotBusy}"
+                    HorizontalOptions="Center" 
+                    Grid.Row="3"
+                    Grid.ColumnSpan="1"
+                    Grid.Column="0"
+                    Margin="8" />
+
+                <ActivityIndicator IsVisible="{Binding IsBusy}"
+                                   IsRunning="{Binding IsBusy}"
+                                   HorizontalOptions="FillAndExpand"
+                                   VerticalOptions="Center"
+                                   Grid.RowSpan="1"
+                                   Grid.ColumnSpan="2"
+                                   Grid.Column="0"
+                                   Grid.Row="3"/>
+                
+                <Grid.Shadow>
+                    <Shadow Brush="Black"
+                            Offset="0,20"
+                            Radius="1"
+                            Opacity="0.04"/>
+                </Grid.Shadow>
+            </Grid>
+
+            
+
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

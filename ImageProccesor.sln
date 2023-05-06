@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31611.283
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageProccesor", "ImageProccesor\ImageProccesor.csproj", "{7C517973-6FBB-4FE2-8180-EAD6AD3248E3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NewFolder1", "NewFolder1", "{AD9B2A41-C7AA-48DE-81D6-056D01B914C3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2A0163B9-16A8-4F40-AB6B-86021BBFD368}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7C517973-6FBB-4FE2-8180-EAD6AD3248E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C517973-6FBB-4FE2-8180-EAD6AD3248E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C517973-6FBB-4FE2-8180-EAD6AD3248E3}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{7C517973-6FBB-4FE2-8180-EAD6AD3248E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C517973-6FBB-4FE2-8180-EAD6AD3248E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C517973-6FBB-4FE2-8180-EAD6AD3248E3}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {61F7FB11-1E47-470C-91E2-47F8143E1572}
+	EndGlobalSection
+EndGlobal
