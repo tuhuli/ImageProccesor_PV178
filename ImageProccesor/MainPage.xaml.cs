@@ -27,7 +27,7 @@ public partial class MainPage : ContentPage
 
         foreach( var result in results )
         {
-            await _viewModel.AddPictureAsync(result.FullPath);
+            await _viewModel.AddPicturesAsync(result.FullPath);
         }
         
     }

@@ -6,26 +6,45 @@ namespace ImageProccesor.Services
 {
     public class ImageService
     {
-        private List<ImageModel> _imagePaths;
-        public ImageService() 
+        private readonly string _imageDirectoryPath;
+        private readonly string _directoryName = "524985_MyAppImageProccesor";
+        public List<ImageModel> Images { get; }
+        public ImageService()
         {
-            _imagePaths = new List<ImageModel>();
-            _imagePaths.Add(new ImageModel("C:\\Users\\Peter\\OneDrive\\Obrázky\\Snímky obrazovky\\1.PNG"));
+            
+            _imageDirectoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), _directoryName);
 
+            // If the directory does not exist, create it
+            if (!Directory.Exists(_imageDirectoryPath))
+            {
+                Directory.CreateDirectory(_imageDirectoryPath);
+            }
 
+            Images = new List<ImageModel>();
+
+            Images.Add(new ImageModel("C:\\Users\\Peter\\OneDrive\\Obrázky\\Snímky obrazovky\\1.PNG"));
         }
-        public List<ImageModel> GetImagesMaui()
+
+
+        public void AddImage(string path)
         {
-
-
-
-            return _imagePaths;
-            throw new NotImplementedException();
+            Images.Add(new ImageModel(path));
         }
         
         public void AddPath(string path)
         {
-            _imagePaths.Add(new ImageModel(path));
+            string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(path);
+            string destinationPath = Path.Combine(_imageDirectoryPath, uniqueFileName);
+
+            File.Copy(path, destinationPath);
+
+            Images.Add(new ImageModel(destinationPath));
+        }
+
+        public void RemoveImage(int id)
+        {
+            Images.RemoveAll(image => image.ImageId == id);
+
         }
     }
 

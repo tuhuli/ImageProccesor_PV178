@@ -1,12 +1,8 @@
-﻿using System;
-using CommunityToolkit.Mvvm;
-using ImageProccesor.Services;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ImageProccesor.Services;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.Input;
+using ImageProccesor.Transformers;
 
 namespace ImageProccesor.ViewModel
 {
@@ -34,7 +30,7 @@ namespace ImageProccesor.ViewModel
             try
             {
                 IsBusy = true;
-                var images = ImageService.GetImagesMaui();
+                var images = ImageService.Images;
                 Images.Clear();
                 foreach (var image in images) 
                 {
@@ -54,10 +50,32 @@ namespace ImageProccesor.ViewModel
             }
         }
 
-        public async Task AddPictureAsync(string path)
+        public async Task SmoothenImages()
         {
-            ImageService.AddPath(path);
+            int completed = 0;
+            foreach(ImageModel image in Images)
+            {
+                await LinearFilters.Smoothing(image);
+                completed++;
+            }
+        }
+
+        public async Task AddPicturesAsync(string path)
+        {
+   
+            ImageService.AddImage(path);
             await GetImagesAsync();
+
+
+            
+        }
+        [RelayCommand]
+        public async Task DeletePicturesAsync(int id)
+        {
+
+            ImageService.RemoveImage(id);
+            await GetImagesAsync();
+
         }
     }
 }

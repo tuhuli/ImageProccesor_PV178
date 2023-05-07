@@ -1,31 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using Microsoft.Maui.Controls;
+using System;
+using System.Drawing;
+using System.IO;
 
 namespace ImageProccesor
 {
     public class ImageModel
     {
-        public string ImageSource { get; }
-        public string Name { get; }
+        public string ImageSourcePath { get; }
+        public ImageSource ImageSourceSource { get; }
+        public int ImageId { get; }
+        public string ImageInfo => $"{ImageId}. {GetFileName()}";
+        public Bitmap ImageBitmap { get; set; }
 
         private static int _imagesCount = 0;
-        public int ImageNumber { get; }
 
-        public ImageModel(string source) 
+        public ImageModel(string source)
         {
-            ImageSource = source;
-            Console.WriteLine($"source");
+            ImageSourcePath = source;
             _imagesCount++;
-            ImageNumber = _imagesCount;
-            Name = GetFileNameFromPath(source);
+            ImageId = _imagesCount;
+            ImageBitmap = new Bitmap(source);
+            ImageSourceSource = GetMauiImage();
         }
-        public static string GetFileNameFromPath(string path)
-        {
 
-            var filename = Path.GetFileName(path);
+        public string GetFileName()
+        {
+            var filename = Path.GetFileName(ImageSourcePath);
 
             if (string.IsNullOrEmpty(filename))
             {
@@ -33,6 +35,17 @@ namespace ImageProccesor
             }
 
             return filename;
+        }
+
+        public ImageSource GetMauiImage()
+        {
+            var resizedImage = new Bitmap(ImageBitmap, new System.Drawing.Size(400, 400));
+            using var ms = new MemoryStream();
+            resizedImage.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+            var imageBytes = ms.ToArray();
+
+            var imageSource = ImageSource.FromStream(() => new MemoryStream(imageBytes));
+            return imageSource;
         }
     }
 }
