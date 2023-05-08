@@ -2,6 +2,7 @@
 
 namespace ImageProccesor.ViewModel
 {
+    
     public partial class BaseViewModel : ObservableObject
     {
         [ObservableProperty]

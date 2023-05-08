@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.Input;
 using ImageProccesor.Transformers;
+using System.Drawing;
 
 namespace ImageProccesor.ViewModel
 {
@@ -34,7 +35,7 @@ namespace ImageProccesor.ViewModel
                 Images.Clear();
                 foreach (var image in images) 
                 {
-                    
+                    image.RefreshMauiImage();
                     Images.Add(image);
                 }
 
@@ -50,14 +51,29 @@ namespace ImageProccesor.ViewModel
             }
         }
 
-        public async Task SmoothenImages()
+        [RelayCommand]
+        public async Task SmoothenImagesAsync()
         {
             int completed = 0;
             foreach(ImageModel image in Images)
             {
-                await LinearFilters.Smoothing(image);
+                LinearFilters.SmoothingAsync(image);
                 completed++;
             }
+            await GetImagesAsync();
+        }
+
+        [RelayCommand]
+        public async Task BrightenImagesAsync() 
+        {
+            int brightnessAddition = 10;
+            int completed = 0;
+            foreach (ImageModel image in Images)
+            {
+                LinearFilters.AddBrightnessToImage(image, brightnessAddition);
+                completed++;
+            }
+            await GetImagesAsync();
         }
 
         public async Task AddPicturesAsync(string path)

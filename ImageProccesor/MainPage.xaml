@@ -43,18 +43,15 @@
                                         Command="{Binding BindingContext.DeletePicturesCommand, Source={x:Reference viewmodel}}"
                                         CommandParameter="{Binding ImageId}"
                                         IsEnabled="{Binding BindingContext.IsNotBusy, Source={x:Reference viewmodel}}"
-
-                                          
-
-
                                         Grid.Row="0"/>
                                     
-                                    <Label Text="{Binding ImageInfo}"
-                                           SemanticProperties.HeadingLevel="Level2"
-                                           FontSize="Micro"
-                                           HorizontalOptions="Center"
-                                           VerticalOptions="End"
-                                           Grid.Row="1 "/>
+                                    <Label 
+                                        Text="{Binding ImageInfo}"
+                                        SemanticProperties.HeadingLevel="Level2"
+                                        FontSize="Micro"
+                                        HorizontalOptions="Center"
+                                        VerticalOptions="End"
+                                        Grid.Row="1 "/>
                                         
                                 </Grid>
                             </Frame>
@@ -64,11 +61,11 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <Grid ColumnDefinitions="*,*"
-                  ColumnSpacing="5"
-                  RowDefinitions="*,*,Auto,*"
-                  RowSpacing="10"
-                  >
+            <Grid 
+                ColumnDefinitions="*,*"
+                ColumnSpacing="5"
+                RowDefinitions="*,*,Auto,*"
+                RowSpacing="10">
                 
                 <Label
                     Text="ImageProccesor by Pier!"
@@ -81,7 +78,7 @@
 
 
                 <Label
-                    Text="Welcome to .NET Multi-platform App UI Imageprocessor"
+                    Text="Welcome to .NET 'Multi'(Single)-platform App UI Imageprocessor"
                     SemanticProperties.HeadingLevel="Level2"
                     SemanticProperties.Description="Welcome to dot net Multi platform App U I Imageprocessor"
                     FontSize="18"
@@ -113,22 +110,46 @@
                     Grid.Column="0"
                     Margin="8" />
 
-                    
+                <Button
+                    x:Name="SmoothImages"
+                    Text="Smooth Images"
+                    SemanticProperties.Hint="smooth images to show"
+                    Command="{Binding SmoothenImagesCommand}"
+                    IsEnabled="{Binding IsNotBusy}"
+                    HorizontalOptions="Center" 
+                    Grid.Row="2"
+                    Grid.ColumnSpan="1"
+                    Grid.Column="0"
+                    Margin="8" />
 
-                <ActivityIndicator IsVisible="{Binding IsBusy}"
-                                   IsRunning="{Binding IsBusy}"
-                                   HorizontalOptions="FillAndExpand"
-                                   VerticalOptions="Center"
-                                   Grid.RowSpan="1"
-                                   Grid.ColumnSpan="2"
-                                   Grid.Column="0"
-                                   Grid.Row="3"/>
-                
+                <Button
+                    x:Name="BrightenImages"
+                    Text="Brighten Images"
+                    SemanticProperties.Hint="brighten images to show"
+                    Command="{Binding BrightenImagesCommand}"
+                    IsEnabled="{Binding IsNotBusy}"
+                    HorizontalOptions="Center" 
+                    Grid.Row="2"
+                    Grid.ColumnSpan="1"
+                    Grid.Column="1"
+                    Margin="8" />
+
+                <ActivityIndicator 
+                    IsVisible="{Binding IsBusy}"
+                    IsRunning="{Binding IsBusy}"
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="Center"
+                    Grid.RowSpan="1"
+                    Grid.ColumnSpan="2"
+                    Grid.Column="0"
+                    Grid.Row="3"/>
+
                 <Grid.Shadow>
-                    <Shadow Brush="Black"
-                            Offset="0,20"
-                            Radius="1"
-                            Opacity="0.04"/>
+                    <Shadow 
+                        Brush="Black"
+                        Offset="0,20"
+                        Radius="1"
+                        Opacity="0.04"/>
                 </Grid.Shadow>
             </Grid>
 

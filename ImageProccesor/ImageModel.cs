@@ -1,15 +1,19 @@
 ﻿
+using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Maui.Controls;
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 
 namespace ImageProccesor
 {
-    public class ImageModel
+    public partial class ImageModel: ObservableObject
     {
         public string ImageSourcePath { get; }
-        public ImageSource ImageSourceSource { get; }
+
+        [ObservableProperty]
+        public ImageSource imageSourceSource; 
         public int ImageId { get; }
         public string ImageInfo => $"{ImageId}. {GetFileName()}";
         public Bitmap ImageBitmap { get; set; }
@@ -22,7 +26,6 @@ namespace ImageProccesor
             _imagesCount++;
             ImageId = _imagesCount;
             ImageBitmap = new Bitmap(source);
-            ImageSourceSource = GetMauiImage();
         }
 
         public string GetFileName()
@@ -37,15 +40,16 @@ namespace ImageProccesor
             return filename;
         }
 
-        public ImageSource GetMauiImage()
+        public void RefreshMauiImage()
         {
             var resizedImage = new Bitmap(ImageBitmap, new System.Drawing.Size(400, 400));
+            int newBlue = ImageBitmap.GetPixel(0, 0).B;
             using var ms = new MemoryStream();
             resizedImage.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
             var imageBytes = ms.ToArray();
 
             var imageSource = ImageSource.FromStream(() => new MemoryStream(imageBytes));
-            return imageSource;
+            ImageSourceSource = imageSource;
         }
     }
 }
