@@ -4,15 +4,20 @@ using System.Diagnostics;
 using CommunityToolkit.Mvvm.Input;
 using ImageProccesor.Transformers;
 using System.Drawing;
+using CommunityToolkit.Mvvm.ComponentModel;
+using System.Runtime.Versioning;
 
 namespace ImageProccesor.ViewModel
 {
+    [SupportedOSPlatform("Windows")]
     public partial class ImageViewModel : BaseViewModel
 
     {
 
         public ObservableCollection<ImageModel> Images { get; } = new();
         public ImageService ImageService { get; }
+        [ObservableProperty]
+        private int? _completedPictures;
 
 
         public ImageViewModel() {
@@ -54,26 +59,29 @@ namespace ImageProccesor.ViewModel
         [RelayCommand]
         public async Task SmoothenImagesAsync()
         {
-            int completed = 0;
-            foreach(ImageModel image in Images)
+            CompletedPictures = 0;
+            foreach (ImageModel image in Images)
             {
                 LinearFilters.SmoothingAsync(image);
-                completed++;
+                CompletedPictures++;
             }
             await GetImagesAsync();
+            
         }
 
         [RelayCommand]
         public async Task BrightenImagesAsync() 
         {
             int brightnessAddition = 10;
-            int completed = 0;
+            CompletedPictures = 0;
             foreach (ImageModel image in Images)
             {
-                LinearFilters.AddBrightnessToImage(image, brightnessAddition);
-                completed++;
+                await LinearFilters.AddBrightnessToImageAsync(image, brightnessAddition);
+                
+                CompletedPictures++;
             }
             await GetImagesAsync();
+            
         }
 
         public async Task AddPicturesAsync(string path)

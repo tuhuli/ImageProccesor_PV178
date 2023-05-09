@@ -14,6 +14,11 @@
             Padding="30,0"
             VerticalOptions="Center">
 
+            <Label
+                Text="{Binding CompletedPictures}"
+                HorizontalOptions="Center"
+                FontSize="Micro"
+                />
 
             <CollectionView ItemsSource="{Binding Images}"
                             BackgroundColor="LightBlue">
@@ -39,11 +44,16 @@
                                     <!--Currently have a bug. AspectFit does not work properly .
                                              Link to GitHub Issue https://github.com/dotnet/maui/issues/6378 -->
                                     <ImageButton 
+
                                         Source="{Binding ImageSourceSource}" 
                                         Command="{Binding BindingContext.DeletePicturesCommand, Source={x:Reference viewmodel}}"
                                         CommandParameter="{Binding ImageId}"
                                         IsEnabled="{Binding BindingContext.IsNotBusy, Source={x:Reference viewmodel}}"
-                                        Grid.Row="0"/>
+                                        Background="White"
+                                        BorderColor="AliceBlue"
+                                        Grid.Row="0"
+                                        BackgroundColor="White"/>
+                                        
                                     
                                     <Label 
                                         Text="{Binding ImageInfo}"

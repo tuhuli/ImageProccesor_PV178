@@ -5,8 +5,6 @@ VisualStudioVersion = 17.0.31611.283
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageProccesor", "ImageProccesor\ImageProccesor.csproj", "{7C517973-6FBB-4FE2-8180-EAD6AD3248E3}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NewFolder1", "NewFolder1", "{AD9B2A41-C7AA-48DE-81D6-056D01B914C3}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2A0163B9-16A8-4F40-AB6B-86021BBFD368}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
