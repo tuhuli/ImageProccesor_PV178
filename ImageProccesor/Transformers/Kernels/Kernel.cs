@@ -24,6 +24,22 @@ namespace ImageProccesor.Transformers.Kernels
                 return Array.GetLength(1);
             }
         }
+
+        public int RowOffset
+        {
+            get
+            {
+                return Rows / 2;
+            }
+        }
+
+        public int ColumnOffset
+        {
+            get
+            {
+                return Columns / 2;
+            }
+        }
         public static Kernel SmallGaussianKernel { get; }
         public static Kernel MediumGaussianKernel { get; }
         public static Kernel LargeGaussianKernel { get; }

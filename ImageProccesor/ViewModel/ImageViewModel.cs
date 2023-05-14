@@ -6,6 +6,7 @@ using ImageProccesor.Transformers;
 using System.Drawing;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Runtime.Versioning;
+using ImageProccesor.Transformers.Kernels;
 
 namespace ImageProccesor.ViewModel
 {
@@ -16,12 +17,32 @@ namespace ImageProccesor.ViewModel
 
         public ObservableCollection<ImageModel> Images { get; } = new();
         public ImageService ImageService { get; }
+
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(CompletedPicturesInfo))]
         private int? _completedPictures;
+        public string CompletedPicturesInfo => $"Finished Pictures = {CompletedPictures}";
+        public Kernel SmoothingKernel { get; set; }
+        private string _brightness;
+        public string Brightness
+        {
+            get { return _brightness; }
+            set
+            {
+                int result;
+                if (int.TryParse(value, out result) && result >= -256 && result <= 256)
+                {
+                    _brightness = value;
+                    OnPropertyChanged(nameof(Brightness));
+                }
+            }
+        }
 
-
-        public ImageViewModel() {
+        public ImageViewModel()
+        {
             ImageService = new ImageService();
+            CompletedPictures = 0;
+            SmoothingKernel= Kernel.SmallGaussianKernel;
             
         }
 
@@ -59,12 +80,31 @@ namespace ImageProccesor.ViewModel
         [RelayCommand]
         public async Task SmoothenImagesAsync()
         {
-            CompletedPictures = 0;
-            foreach (ImageModel image in Images)
+            if (IsBusy)
             {
-                LinearFilters.SmoothingAsync(image);
-                CompletedPictures++;
+                return;
             }
+            try
+            {
+                IsBusy = true;
+                CompletedPictures = 0;
+                foreach (ImageModel image in Images)
+                {
+                    await LinearFilters.SmoothingAsync(image, SmoothingKernel);
+                    CompletedPictures++;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                await Shell.Current.DisplayAlert(" Smoothing Error", $"{ex.Message}", "click");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+            
             await GetImagesAsync();
             
         }
@@ -72,16 +112,35 @@ namespace ImageProccesor.ViewModel
         [RelayCommand]
         public async Task BrightenImagesAsync() 
         {
-            int brightnessAddition = 10;
-            CompletedPictures = 0;
-            foreach (ImageModel image in Images)
+            if (IsBusy)
             {
-                await LinearFilters.AddBrightnessToImageAsync(image, brightnessAddition);
-                
-                CompletedPictures++;
+                return;
             }
-            await GetImagesAsync();
+            try
+            {
+                IsBusy = true;
+
+                CompletedPictures = 0;
+                foreach (ImageModel image in Images)
+                {
+                    await LinearFilters.AddBrightnessToImageAsync(image, Brightness);
+
+                    CompletedPictures++;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                await Shell.Current.DisplayAlert(" BrightnessError", $"{ex.Message}", "click");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
             
+            await GetImagesAsync();
+
         }
 
         public async Task AddPicturesAsync(string path)
@@ -101,5 +160,11 @@ namespace ImageProccesor.ViewModel
             await GetImagesAsync();
 
         }
+
+
+
+
     }
+
+
 }

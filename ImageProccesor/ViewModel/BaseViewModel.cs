@@ -8,13 +8,10 @@ namespace ImageProccesor.ViewModel
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsNotBusy))]
         private bool _isBusy;
-        public bool IsNotBusy => !_isBusy;
-        [ObservableProperty]
-        private string _title;
+        public bool IsNotBusy => !IsBusy;
         public BaseViewModel()
         {
             _isBusy= false;
-            _title = "Images";
         }
     }
 }

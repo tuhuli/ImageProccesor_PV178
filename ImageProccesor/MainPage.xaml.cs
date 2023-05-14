@@ -2,6 +2,7 @@
 using ImageProccesor.ViewModel;
 using Microsoft.Maui.Storage;
 using System.Collections.ObjectModel;
+using ImageProccesor.Transformers.Kernels;
 
 namespace ImageProccesor;
 
@@ -30,6 +31,33 @@ public partial class MainPage : ContentPage
             await _viewModel.AddPicturesAsync(result.FullPath);
         }
         
+    }
+
+    private void LargeRadioButton_CheckedChanged(object sender, CheckedChangedEventArgs e)
+    {
+        if (e.Value)
+        {
+            // Update _smoothingKernel with the large kernel
+            _viewModel.SmoothingKernel = Kernel.LargeGaussianKernel;
+        }
+    }
+
+    private void MediumRadioButton_CheckedChanged(object sender, CheckedChangedEventArgs e)
+    {
+        if (e.Value)
+        {
+            // Update _smoothingKernel with the medium kernel
+            _viewModel.SmoothingKernel = Kernel.MediumGaussianKernel;
+        }
+    }
+
+    private void SmallRadioButton_CheckedChanged(object sender, CheckedChangedEventArgs e)
+    {
+        if (e.Value)
+        {
+            // Update _smoothingKernel with the small kernel
+            _viewModel.SmoothingKernel = Kernel.SmallGaussianKernel;
+        }
     }
 
 

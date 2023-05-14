@@ -1,5 +1,6 @@
 ﻿
 using CommunityToolkit.Mvvm.ComponentModel;
+using ImageProccesor.Transformers;
 using Microsoft.Maui.Controls;
 using System;
 using System.ComponentModel;
@@ -44,9 +45,8 @@ namespace ImageProccesor
 
         public void RefreshMauiImage()
         {
-            //var resizedImage = new Bitmap(ImageBitmap, new System.Drawing.Size(400, 400));
+            Bitmap resizedImage = Resizer.FillIn(ImageBitmap, 400, 400);
             using var ms = new MemoryStream();
-            var resizedImage = ImageBitmap;
             resizedImage.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
             var imageBytes = ms.ToArray();
 

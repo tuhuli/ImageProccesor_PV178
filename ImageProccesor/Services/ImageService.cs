@@ -1,9 +1,12 @@
 ﻿
-using SixLabors.ImageSharp;
 
+
+
+using System.Runtime.Versioning;
 
 namespace ImageProccesor.Services
 {
+    [SupportedOSPlatform("Windows")]
     public class ImageService
     {
         private readonly string _imageDirectoryPath;

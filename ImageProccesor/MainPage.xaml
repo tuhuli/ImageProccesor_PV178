@@ -2,6 +2,7 @@
 <ContentPage x:Name="viewmodel"
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:Microsoft.Maui.Controls;assembly=Microsoft.Maui.Controls"
              xmlns:model="clr-namespace:ImageProccesor"
              xmlns:viewmodel="clr-namespace:ImageProccesor.ViewModel"
              x:DataType="viewmodel:ImageViewModel"
@@ -15,7 +16,7 @@
             VerticalOptions="Center">
 
             <Label
-                Text="{Binding CompletedPictures}"
+                Text="{Binding CompletedPicturesInfo}"
                 HorizontalOptions="Center"
                 FontSize="Micro"
                 />
@@ -72,11 +73,61 @@
             </CollectionView>
 
             <Grid 
+                x:Name="Grid"
                 ColumnDefinitions="*,*"
                 ColumnSpacing="5"
-                RowDefinitions="*,*,Auto,*"
-                RowSpacing="10">
-                
+                RowDefinitions="*,*,Auto,60, *"
+                RowSpacing="3">
+               
+
+
+                <Grid
+                    x:Name="InputGrid"
+                    ColumnDefinitions="*,*,*"
+                    
+                    ColumnSpacing = "2"
+                    RowSpacing="10"
+                    Padding="10"
+                    Grid.Row="3">
+
+                    <StackLayout Orientation="Horizontal" Grid.Column="0">
+                        <Label Text="Large" VerticalOptions="Center" />
+                        <controls:RadioButton GroupName="Options" 
+
+                                              CheckedChanged="LargeRadioButton_CheckedChanged" />
+                    </StackLayout>
+
+                    <StackLayout Orientation="Horizontal" Grid.Column="1">
+                        <Label Text="Medium" 
+                               VerticalOptions="Center" />
+                        <controls:RadioButton GroupName="Options" 
+                                               
+                                              CheckedChanged="MediumRadioButton_CheckedChanged" />
+                    </StackLayout>
+
+                    <StackLayout Orientation="Horizontal" Grid.Column="2">
+                        <Label Text="Small" VerticalOptions="Center" />
+                        <controls:RadioButton GroupName="Options" 
+                                              IsChecked="True"
+
+                                              CheckedChanged="SmallRadioButton_CheckedChanged" />
+                    </StackLayout>
+                </Grid>
+
+                <controls:Entry MaxLength="4"
+                                Placeholder="[-256, 256]"
+                                Keyboard="Numeric"
+                                Grid.Row="3"
+                                Grid.Column="1"
+                                MaximumHeightRequest="13"
+                                MaximumWidthRequest="100"
+                                Text="{Binding Brightness}">
+
+
+                </controls:Entry>
+                    
+                    
+
                 <Label
                     Text="ImageProccesor by Pier!"
                     SemanticProperties.HeadingLevel="Level1"
@@ -101,12 +152,14 @@
                     Text="Add Images"
                     SemanticProperties.Hint="Adding pictures to show"
                     Clicked="FilePickerClickedAsync" 
+                    IsEnabled="{Binding IsNotBusy}"
                     HorizontalOptions="Center"
-                    Grid.Row="3"
+                    Grid.Row="4"
                     Grid.ColumnSpan="1"
                     Grid.Column="1"
                     Margin="8"/>
                     
+                
             
                 <Button
                     x:Name="GetImages"
@@ -115,7 +168,7 @@
                     Command="{Binding GetImagesCommand}"
                     IsEnabled="{Binding IsNotBusy}"
                     HorizontalOptions="Center" 
-                    Grid.Row="3"
+                    Grid.Row="4"
                     Grid.ColumnSpan="1"
                     Grid.Column="0"
                     Margin="8" />
