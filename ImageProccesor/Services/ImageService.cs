@@ -1,7 +1,4 @@
 ﻿
-
-
-
 using System.Runtime.Versioning;
 
 namespace ImageProccesor.Services
@@ -10,14 +7,15 @@ namespace ImageProccesor.Services
     public class ImageService
     {
         private readonly string _imageDirectoryPath;
+        // my directory path while debugging C:\Users\Peter\Desktop\C#\ImageProccesorApp\ImageProccesor\ImageProccesor\bin\Debug\net6.0-windows10.0.19041.0\win10-x64\AppX\524985_MyAppImageProccesor
+
         private readonly string _directoryName = "524985_MyAppImageProccesor";
         public List<ImageModel> Images { get; }
         public ImageService()
         {
             
-            _imageDirectoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), _directoryName);
+            _imageDirectoryPath = Path.Combine(AppContext.BaseDirectory, _directoryName);
 
-            // If the directory does not exist, create it
             if (!Directory.Exists(_imageDirectoryPath))
             {
                 Directory.CreateDirectory(_imageDirectoryPath);
@@ -33,23 +31,24 @@ namespace ImageProccesor.Services
         {
             Images.Add(new ImageModel(path));
         }
-        
-        public void AddPath(string path)
-        {
-            string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(path);
-            string destinationPath = Path.Combine(_imageDirectoryPath, uniqueFileName);
-
-            File.Copy(path, destinationPath);
-
-            Images.Add(new ImageModel(destinationPath));
-        }
 
         public void RemoveImage(int id)
         {
+            Images.FindAll(image => image.ImageId == id)
+                .ForEach(image => image.ImageBitmap.Dispose());
             Images.RemoveAll(image => image.ImageId == id);
 
         }
-    }
 
-    
+        public void SaveImage(int id)
+        {
+            ImageModel image = Images.FirstOrDefault(img => img.ImageId == id);
+            if (image != null)
+            {
+                string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(image.ImageSourcePath);
+                string filePath = Path.Combine(_imageDirectoryPath, uniqueFileName);
+                image.ImageBitmap.Save(filePath);
+            }
+        }
+    }
 }

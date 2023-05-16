@@ -76,7 +76,7 @@
                 x:Name="Grid"
                 ColumnDefinitions="*,*"
                 ColumnSpacing="5"
-                RowDefinitions="*,*,Auto,60, *"
+                RowDefinitions="*,*,Auto,60, *, *, *"
                 RowSpacing="3">
                
 
@@ -162,10 +162,10 @@
                 
             
                 <Button
-                    x:Name="GetImages"
-                    Text="Refresh Images"
-                    SemanticProperties.Hint="Refreshing images to show"
-                    Command="{Binding GetImagesCommand}"
+                    x:Name="SaveImages"
+                    Text="Save Images"
+                    SemanticProperties.Hint="Saving shown images"
+                    Command="{Binding SaveImagesCommand}"
                     IsEnabled="{Binding IsNotBusy}"
                     HorizontalOptions="Center" 
                     Grid.Row="4"
@@ -196,6 +196,40 @@
                     Grid.ColumnSpan="1"
                     Grid.Column="1"
                     Margin="8" />
+                
+                <Button
+                    x:Name="HueModify"
+                    Text="Modify Hue"
+                    SemanticProperties.Hint="modify hue in images to show"
+                    Command="{Binding ModifyHueImagesCommand}"
+                    IsEnabled="{Binding IsNotBusy}"
+                    HorizontalOptions="Center" 
+                    Grid.Row="5"
+                    Grid.ColumnSpan="1"
+                    Grid.Column="1"
+                    Margin="8" />
+
+                <Slider 
+                    Value="{Binding Hue}"
+                    MinimumTrackColor="Red"
+                    MaximumTrackColor="Blue"
+                    Minimum="0"
+                    Maximum="359"
+                    Grid.Row="6"
+                    Grid.Column=" 1"/>
+
+                <Button
+                    x:Name="SharpenImage"
+                    Text="Sharpen Image"
+                    SemanticProperties.Hint="Sharpen images to show"
+                    Command="{Binding SharpenImageCommand}"
+                    IsEnabled="{Binding IsNotBusy}"
+                    HorizontalOptions="Center" 
+                    Grid.Row="5"
+                    Grid.ColumnSpan="1"
+                    Grid.Column="0"
+                    Margin="8" />
+
 
                 <ActivityIndicator 
                     IsVisible="{Binding IsBusy}"

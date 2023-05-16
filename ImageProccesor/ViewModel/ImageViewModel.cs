@@ -3,10 +3,10 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.Input;
 using ImageProccesor.Transformers;
-using System.Drawing;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Runtime.Versioning;
 using ImageProccesor.Transformers.Kernels;
+   
 
 namespace ImageProccesor.ViewModel
 {
@@ -37,12 +37,16 @@ namespace ImageProccesor.ViewModel
                 }
             }
         }
+        [ObservableProperty]
+        private int _hue;
+       
 
         public ImageViewModel()
         {
             ImageService = new ImageService();
+
             CompletedPictures = 0;
-            SmoothingKernel= Kernel.SmallGaussianKernel;
+            SmoothingKernel= new SmallGaussianKernel();
             
         }
 
@@ -123,7 +127,7 @@ namespace ImageProccesor.ViewModel
                 CompletedPictures = 0;
                 foreach (ImageModel image in Images)
                 {
-                    await LinearFilters.AddBrightnessToImageAsync(image, Brightness);
+                    await LinearFilters.AddBrightnessToImageAsync(image, int.Parse(Brightness));
 
                     CompletedPictures++;
                 }
@@ -132,7 +136,7 @@ namespace ImageProccesor.ViewModel
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                await Shell.Current.DisplayAlert(" BrightnessError", $"{ex.Message}", "click");
+                await Shell.Current.DisplayAlert(" BrightnessError", $"Write correct value ", "click");
             }
             finally
             {
@@ -143,6 +147,74 @@ namespace ImageProccesor.ViewModel
 
         }
 
+        [RelayCommand]
+        public async Task ModifyHueImagesAsync()
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+            try
+            {
+                IsBusy = true;
+
+                CompletedPictures = 0;
+                foreach (ImageModel image in Images)
+                {
+                    await LinearFilters.ModifyHueAsync(image, Hue);
+
+                    CompletedPictures++;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                await Shell.Current.DisplayAlert(" Hue Error", $"{ex.Message}", "click");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+            await GetImagesAsync();
+
+        }
+
+        [RelayCommand]
+        public async Task SharpenImageAsync()
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+            try
+            {
+                IsBusy = true;
+
+                CompletedPictures = 0;
+                foreach (ImageModel image in Images)
+                {
+                    await LinearFilters.SmoothingAsync(image, new UnsharpMaskingKernel());
+
+                    CompletedPictures++;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                await Shell.Current.DisplayAlert(" Hue Error", $"{ex.Message}", "click");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+            await GetImagesAsync();
+        }
+
+
         public async Task AddPicturesAsync(string path)
         {
    
@@ -152,6 +224,7 @@ namespace ImageProccesor.ViewModel
 
             
         }
+
         [RelayCommand]
         public async Task DeletePicturesAsync(int id)
         {
@@ -161,7 +234,33 @@ namespace ImageProccesor.ViewModel
 
         }
 
+        [RelayCommand]
+        public async Task SaveImagesAsync()
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+            try
+            {
+                IsBusy = true;
+                var images = ImageService.Images;
+                images.ForEach(image => ImageService.SaveImage(image.ImageId));
 
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                await Shell.Current.DisplayAlert(" GetImagesError", $"{ex.Message}", "click");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+
+        
 
 
     }

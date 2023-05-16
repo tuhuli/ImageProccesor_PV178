@@ -52,6 +52,7 @@ namespace ImageProccesor
 
             var imageSource = ImageSource.FromStream(() => new MemoryStream(imageBytes));
             ImageSourceSource = imageSource;
+            resizedImage.Dispose();
         }
     }
 }

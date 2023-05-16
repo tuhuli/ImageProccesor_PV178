@@ -1,13 +1,10 @@
 ﻿using ImageProccesor.Transformers.Kernels;
-using System;
-using System.Collections.Generic;
+using ImageProccesor.Transformers.Histograms;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
 using System.Runtime.Versioning;
-using System.Text;
-using System.Threading.Tasks;
-using Color = System.Drawing.Color;
+
+
 
 namespace ImageProccesor.Transformers
 {
@@ -19,12 +16,51 @@ namespace ImageProccesor.Transformers
             await Task.Run(() =>
             {
                 Bitmap processedBitmap = processedImage.ImageBitmap;
-                processedImage.ImageBitmap = Convolve(processedBitmap, kernel);
+                processedImage.ImageBitmap = LinearFiltersHelper.Convolve(processedBitmap, kernel);
+                processedBitmap.Dispose();
             });
 
         }
 
+
         public static async Task AddBrightnessToImageAsync(ImageModel processedImage, int brightnessAddition)
+        {
+            await Task.Run(() =>
+            {
+                Bitmap processedBitmap = processedImage.ImageBitmap;
+                unsafe
+                {
+                    BitmapData bitmapData = processedBitmap.LockBits(
+                        new System.Drawing.Rectangle(
+                            0, 
+                            0, 
+                            processedBitmap.Width,
+                            processedBitmap.Height),
+                        ImageLockMode.ReadWrite,
+                        processedBitmap.PixelFormat);
+
+                    int bytesPerPixel = System.Drawing.Bitmap.GetPixelFormatSize(processedBitmap.PixelFormat) / 8;
+                    int heightInPixels = bitmapData.Height;
+                    int widthInBytes = bitmapData.Width * bytesPerPixel;
+                    byte* PtrFirstPixel = (byte*)bitmapData.Scan0;
+
+                    Parallel.For(0, heightInPixels, y =>
+                    {
+                        byte* currentLine = PtrFirstPixel + (y * bitmapData.Stride);
+                        for (int x = 0; x < widthInBytes; x = x + bytesPerPixel)
+                        {
+                            byte* currentPixel = currentLine + x;
+                            currentPixel[0] = (byte)LinearFiltersHelper.AddBrightness(currentPixel[0], brightnessAddition);
+                            currentPixel[1] = (byte)LinearFiltersHelper.AddBrightness(currentPixel[1], brightnessAddition);
+                            currentPixel[2] = (byte)LinearFiltersHelper.AddBrightness(currentPixel[2], brightnessAddition);
+                        }
+                    });
+                    processedBitmap.UnlockBits(bitmapData);
+                }      
+            });
+        }
+
+        public static async Task ModifyHueAsync(ImageModel processedImage, int hue)
         {
             await Task.Run(() =>
             {
@@ -44,94 +80,28 @@ namespace ImageProccesor.Transformers
                         for (int x = 0; x < widthInBytes; x = x + bytesPerPixel)
                         {
                             byte* currentPixel = currentLine + x;
-                            currentPixel[0] = (byte)AddBrightness(currentPixel[0], brightnessAddition);
-                            currentPixel[1] = (byte)AddBrightness(currentPixel[1], brightnessAddition);
-                            currentPixel[2] = (byte)AddBrightness(currentPixel[2], brightnessAddition);
+                            int r, g, b;
+                            (r, g, b) = LinearFiltersHelper.AddHue(currentPixel[0], currentPixel[1], currentPixel[2], hue);
+
+                            currentPixel[0] = (byte) b;
+                            currentPixel[1] = (byte) g;
+                            currentPixel[2] = (byte) r;
                         }
                     });
                     processedBitmap.UnlockBits(bitmapData);
-                    
                 }
-                
             });
         }
 
-        private static int AddBrightness(int oldValue, int brightnessAddition)
+        public static async Task  HistogramEqalizationAsync(ImageModel processedImage)
         {
-            if (brightnessAddition >= 0)
+            await Task.Run(() =>
             {
-                return oldValue + brightnessAddition < 255 ? oldValue + brightnessAddition : 255;
-            }
-            else
-            {
-                return oldValue + brightnessAddition > 0 ? oldValue + brightnessAddition : 0;
-            }
+                Histogram histogram = new(processedImage.ImageBitmap);
+                histogram.NormalizeCumulativeHistogram();
+                histogram.ApplyEqualization();
+            });
         }
 
-        private static Bitmap Convolve(Bitmap processedBitmap, Kernel kernel)
-        {
-            Bitmap newBitmap = (Bitmap)processedBitmap.Clone();
-
-
-
-            unsafe
-            {
-                BitmapData bitmapData = processedBitmap.LockBits(
-                    new System.Drawing.Rectangle(0, 0, processedBitmap.Width, processedBitmap.Height),
-                    ImageLockMode.ReadWrite,
-                    processedBitmap.PixelFormat
-                    );
-
-                BitmapData newBitmapData = newBitmap.LockBits(
-                    new System.Drawing.Rectangle(0, 0, newBitmap.Width, newBitmap.Height),
-                    ImageLockMode.ReadWrite,
-                    newBitmap.PixelFormat
-                    );
-
-
-                int bytesPerPixel = System.Drawing.Bitmap.GetPixelFormatSize(processedBitmap.PixelFormat) / 8;
-                int heightInPixels = bitmapData.Height;
-                int widthInBytes = bitmapData.Width * bytesPerPixel;
-                byte* PtrFirstPixel = (byte*)bitmapData.Scan0;
-                byte* PtrNewPixel = (byte*)newBitmapData.Scan0;
-
-                Parallel.For(kernel.RowOffset, bitmapData.Height - kernel.RowOffset, y =>
-                {
-                    byte* currentLine = PtrFirstPixel + (y * bitmapData.Stride);
-                    byte* newCurrentLine = PtrNewPixel + (y * newBitmapData.Stride);
-                    for (int x = bytesPerPixel * kernel.ColumnOffset;
-                         x < widthInBytes - bytesPerPixel * kernel.ColumnOffset;
-                         x += bytesPerPixel)
-                    {
-                        int[] sum = { 0, 0, 0 };
-                        byte* currentPixel = currentLine + x;
-                        byte* newCurrentPixel = newCurrentLine + x;
-
-                        for (int u = -kernel.RowOffset; u <= kernel.RowOffset; u++)
-                        {
-                            byte* neighborLine = currentLine + (u * bitmapData.Stride);
-                            for (int v = -kernel.ColumnOffset; v <= kernel.ColumnOffset; v++)
-                            {
-                                byte* neighborPixel = neighborLine + ((x + (v * bytesPerPixel)));
-                                sum[0] += *neighborPixel * kernel.Array[u + kernel.RowOffset, v + kernel.ColumnOffset];
-                                sum[1] += *(neighborPixel + 1) * kernel.Array[u + kernel.RowOffset, v + kernel.ColumnOffset];
-                                sum[2] += *(neighborPixel + 2) * kernel.Array[u + kernel.RowOffset, v + kernel.ColumnOffset];
-                            }
-                        }
-                        newCurrentPixel[0] = (byte)(sum[0] / kernel.Sum);
-                        newCurrentPixel[1] = (byte)(sum[1] / kernel.Sum);
-                        newCurrentPixel[2] = (byte)(sum[2] / kernel.Sum);
-
-
-                    }
-
-                });
-                processedBitmap.UnlockBits(bitmapData);
-                newBitmap.UnlockBits(newBitmapData);
-                return newBitmap;
-
-            }
-
-        }
     }
 }
