@@ -48,17 +48,5 @@ namespace ImageProccesor.Services
                 image.ImageBitmap.Save(filePath);
             }
         }
-
-        public void ChangeDirectory(string path)
-        {
-            if (Directory.Exists(path))
-            {
-                _imageDirectoryPath = path;
-            }
-            else
-            {
-                throw new Exception("Selected file is not a directory");
-            }
-        }
     }
 }

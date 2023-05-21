@@ -29,23 +29,6 @@ public partial class MainPage : ContentPage
         await _viewModel.AddPicturesAsync(results); 
     }
 
-    private async void FileSaverPickerAsync(object sender, EventArgs e)
-    {
-
-        var customFileType = new FilePickerFileType(
-                new Dictionary<DevicePlatform, IEnumerable<string>>
-                {
-                    { DevicePlatform.WinUI, new[] { "" } }, // file extension
-                });
-
-        var directory = await FilePicker.PickAsync(new PickOptions
-        {
-            PickerTitle = "Save Images",
-            FileTypes = customFileType
-        }); ;
-
-        await _viewModel.SaveImagesAsync(directory);
-    }
 
     private void LargeRadioButton_CheckedChanged(object sender, CheckedChangedEventArgs e)
     {

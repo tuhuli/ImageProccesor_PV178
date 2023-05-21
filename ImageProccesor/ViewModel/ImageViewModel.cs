@@ -73,7 +73,7 @@ namespace ImageProccesor.ViewModel
             catch(Exception ex)
             {
                 Debug.WriteLine(ex);
-                await Shell.Current.DisplayAlert(" GetImagesError",$"{ex.Message}", "continue");
+                await Shell.Current.DisplayAlert(" GetImagesError",$"{ex.Message}", "click");
             }
             finally
             {
@@ -136,7 +136,7 @@ namespace ImageProccesor.ViewModel
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                await Shell.Current.DisplayAlert(" BrightnessError", $"Write correct value ", "continue");
+                await Shell.Current.DisplayAlert(" BrightnessError", $"Write correct value ", "click");
             }
             finally
             {
@@ -170,7 +170,7 @@ namespace ImageProccesor.ViewModel
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                await Shell.Current.DisplayAlert(" Hue Error", $"{ex.Message}", "continue");
+                await Shell.Current.DisplayAlert(" Hue Error", $"{ex.Message}", "click");
             }
             finally
             {
@@ -204,7 +204,7 @@ namespace ImageProccesor.ViewModel
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                await Shell.Current.DisplayAlert(" Hue Error", $"{ex.Message}", "continue");
+                await Shell.Current.DisplayAlert(" Hue Error", $"{ex.Message}", "click");
             }
             finally
             {
@@ -236,7 +236,7 @@ namespace ImageProccesor.ViewModel
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                await Shell.Current.DisplayAlert(" Add image error", $"{ex.Message}", "continue");
+                await Shell.Current.DisplayAlert(" AddPicturesAsync", $"{ex.Message}", "click");
             }
             finally
             {
@@ -258,7 +258,8 @@ namespace ImageProccesor.ViewModel
 
         }
 
-        public async Task SaveImagesAsync(FileResult directory)
+        [RelayCommand]
+        public async Task SaveImagesAsync()
         {
             if (IsBusy)
             {
@@ -267,7 +268,6 @@ namespace ImageProccesor.ViewModel
             try
             {
                 IsBusy = true;
-                ImageService.ChangeDirectory(directory.FullPath);
                 var images = ImageService.Images;
                 images.ForEach(image => ImageService.SaveImage(image.ImageId));
 
@@ -275,7 +275,7 @@ namespace ImageProccesor.ViewModel
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                await Shell.Current.DisplayAlert(" Directory Error", $"{ex.Message}", "continue");
+                await Shell.Current.DisplayAlert(" GetImagesError", $"{ex.Message}", "click");
             }
             finally
             {
