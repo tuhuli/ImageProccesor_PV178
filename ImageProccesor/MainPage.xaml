@@ -129,7 +129,7 @@
                     
 
                 <Label
-                    Text="ImageProccesor by Pier!"
+                    Text="ImageProccesor"
                     SemanticProperties.HeadingLevel="Level1"
                     FontSize="32"
                     HorizontalOptions="Center" 
@@ -151,7 +151,7 @@
                     x:Name="AddImage"
                     Text="Add Images"
                     SemanticProperties.Hint="Adding pictures to show"
-                    Clicked="FilePickerClickedAsync" 
+                    Clicked="FileImagePickerAsync" 
                     IsEnabled="{Binding IsNotBusy}"
                     HorizontalOptions="Center"
                     Grid.Row="4"
@@ -165,7 +165,7 @@
                     x:Name="SaveImages"
                     Text="Save Images"
                     SemanticProperties.Hint="Saving shown images"
-                    Command="{Binding SaveImagesCommand}"
+                    Clicked="FileSaverPickerAsync"
                     IsEnabled="{Binding IsNotBusy}"
                     HorizontalOptions="Center" 
                     Grid.Row="4"

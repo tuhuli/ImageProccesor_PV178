@@ -1,7 +1,5 @@
 ﻿
 using ImageProccesor.ViewModel;
-using Microsoft.Maui.Storage;
-using System.Collections.ObjectModel;
 using ImageProccesor.Transformers.Kernels;
 using System.Runtime.Versioning;
 
@@ -20,7 +18,7 @@ public partial class MainPage : ContentPage
         BindingContext= _viewModel;
     }
 
-    private async void FilePickerClickedAsync( object sender, EventArgs e)
+    private async void FileImagePickerAsync( object sender, EventArgs e)
     {
         var results = await FilePicker.PickMultipleAsync(new PickOptions
         {
@@ -28,11 +26,25 @@ public partial class MainPage : ContentPage
             FileTypes = FilePickerFileType.Images
         });
 
-        foreach( var result in results )
+        await _viewModel.AddPicturesAsync(results); 
+    }
+
+    private async void FileSaverPickerAsync(object sender, EventArgs e)
+    {
+
+        var customFileType = new FilePickerFileType(
+                new Dictionary<DevicePlatform, IEnumerable<string>>
+                {
+                    { DevicePlatform.WinUI, new[] { "" } }, // file extension
+                });
+
+        var directory = await FilePicker.PickAsync(new PickOptions
         {
-            await _viewModel.AddPicturesAsync(result.FullPath);
-        }
-        
+            PickerTitle = "Save Images",
+            FileTypes = customFileType
+        }); ;
+
+        await _viewModel.SaveImagesAsync(directory);
     }
 
     private void LargeRadioButton_CheckedChanged(object sender, CheckedChangedEventArgs e)

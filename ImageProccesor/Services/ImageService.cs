@@ -6,10 +6,10 @@ namespace ImageProccesor.Services
     [SupportedOSPlatform("Windows")]
     public class ImageService
     {
-        private readonly string _imageDirectoryPath;
-        // my directory path while debugging C:\Users\Peter\Desktop\C#\ImageProccesorApp\ImageProccesor\ImageProccesor\bin\Debug\net6.0-windows10.0.19041.0\win10-x64\AppX\524985_MyAppImageProccesor
+        private string _imageDirectoryPath;
+       
 
-        private readonly string _directoryName = "524985_MyAppImageProccesor";
+        private readonly string _directoryName = "SavedImages";
         public List<ImageModel> Images { get; }
         public ImageService()
         {
@@ -22,8 +22,6 @@ namespace ImageProccesor.Services
             }
 
             Images = new List<ImageModel>();
-
-            Images.Add(new ImageModel("C:\\Users\\Peter\\OneDrive\\Obrázky\\Snímky obrazovky\\1.PNG"));
         }
 
 
@@ -45,9 +43,21 @@ namespace ImageProccesor.Services
             ImageModel image = Images.FirstOrDefault(img => img.ImageId == id);
             if (image != null)
             {
-                string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(image.ImageSourcePath);
+                string uniqueFileName = image.ImageInfo;
                 string filePath = Path.Combine(_imageDirectoryPath, uniqueFileName);
                 image.ImageBitmap.Save(filePath);
+            }
+        }
+
+        public void ChangeDirectory(string path)
+        {
+            if (Directory.Exists(path))
+            {
+                _imageDirectoryPath = path;
+            }
+            else
+            {
+                throw new Exception("Selected file is not a directory");
             }
         }
     }
