@@ -1,5 +1,4 @@
 ﻿using ImageProccesor.Transformers.Kernels;
-using ImageProccesor.Transformers.Histograms;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.Versioning;
